@@ -11,18 +11,18 @@ import UIKit
 class TodoListViewController: UITableViewController {
 
     var itemArray = [Item]()
-    let defaults = UserDefaults.standard
+    let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent(K.itemsPlist)
     
     override func viewDidLoad() {
         super.viewDidLoad()
-  
+        
         let newItem = Item()
         newItem.title = "Find Mike"
         itemArray.append(newItem)
         
-        if let items = defaults.array(forKey: K.todoItemArrayKey) as? [Item] {
-            itemArray = items
-        }
+//        if let items = defaults.array(forKey: K.todoItemArrayKey) as? [Item] {
+//            itemArray = items
+//        }
     }
     
     // MARK: - Add item Section
@@ -39,8 +39,8 @@ class TodoListViewController: UITableViewController {
             self.itemArray.append(newItem)
             
             // Сохранили массив с новым элементов в UserDefaults
-            self.defaults.setValue(self.itemArray, forKey: K.todoItemArrayKey)
-            self.tableView.reloadData()
+            self.saveData()
+           
         }
         
         alert.addTextField { (alertTextField) in
@@ -79,9 +79,23 @@ extension TodoListViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         itemArray[indexPath.row].done = !itemArray[indexPath.row].done
-        
-        tableView.reloadData()
+        saveData()
         tableView.deselectRow(at: indexPath, animated: true)
     }
 }
 
+// MARK: - Model Methods
+
+extension TodoListViewController {
+    func saveData() {
+        let encoder = PropertyListEncoder()
+        do {
+            let data = try encoder.encode(itemArray)
+            try data.write(to: dataFilePath!)
+        } catch {
+            print("Error encoding item array. \(error)")
+        }
+        
+        tableView.reloadData()
+    }
+}
