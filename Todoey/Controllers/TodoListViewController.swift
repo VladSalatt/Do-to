@@ -15,14 +15,8 @@ class TodoListViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        let newItem = Item()
-        newItem.title = "Find Mike"
-        itemArray.append(newItem)
-        
-//        if let items = defaults.array(forKey: K.todoItemArrayKey) as? [Item] {
-//            itemArray = items
-//        }
+
+        loadItems()
     }
     
     // MARK: - Add item Section
@@ -97,5 +91,16 @@ extension TodoListViewController {
         }
         
         tableView.reloadData()
+    }
+    
+    func loadItems() {
+        if let data = try? Data(contentsOf: dataFilePath!) {
+            let decoder = PropertyListDecoder()
+            do {
+                itemArray = try decoder.decode([Item].self, from: data)
+            } catch {
+                print("Error decoding")
+            }
+        }
     }
 }
