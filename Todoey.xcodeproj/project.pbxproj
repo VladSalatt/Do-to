@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E84EC691261ED2E700B63A57 /* CategoryTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E84EC690261ED2E700B63A57 /* CategoryTableViewController.swift */; };
 		E85FBBB92613790A00116307 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = E85FBBB82613790A00116307 /* Constants.swift */; };
 		E8696CAD261B8FB4004A63EA /* DataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = E8696CAB261B8FB4004A63EA /* DataModel.xcdatamodeld */; };
 		EB2BE4FA239524DB00FB933B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB2BE4F9239524DB00FB933B /* AppDelegate.swift */; };
@@ -17,6 +18,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		E84EC690261ED2E700B63A57 /* CategoryTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryTableViewController.swift; sourceTree = "<group>"; };
 		E85FBBB82613790A00116307 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		E8696CAC261B8FB4004A63EA /* DataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = DataModel.xcdatamodel; sourceTree = "<group>"; };
 		EB2BE4F6239524DB00FB933B /* Todoey.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Todoey.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -50,6 +52,7 @@
 		E8D9B5262614E6C600D585B4 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				E84EC690261ED2E700B63A57 /* CategoryTableViewController.swift */,
 				EB2BE4FD239524DB00FB933B /* TodoListViewController.swift */,
 			);
 			path = Controllers;
@@ -175,6 +178,7 @@
 			files = (
 				E8696CAD261B8FB4004A63EA /* DataModel.xcdatamodeld in Sources */,
 				EB2BE4FE239524DB00FB933B /* TodoListViewController.swift in Sources */,
+				E84EC691261ED2E700B63A57 /* CategoryTableViewController.swift in Sources */,
 				EB2BE4FA239524DB00FB933B /* AppDelegate.swift in Sources */,
 				E85FBBB92613790A00116307 /* Constants.swift in Sources */,
 			);

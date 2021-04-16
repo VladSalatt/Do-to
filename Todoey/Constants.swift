@@ -13,4 +13,6 @@ struct K {
     static let todoItemArrayKey = "ToDoItemArray"
     static let todoCellId = "ToDoItemCell"
     static let itemsPlist = "Items.plist"
+    static let goToItems = "goToItems"
+    static let categoryCell = "CategoryCell"
 }
