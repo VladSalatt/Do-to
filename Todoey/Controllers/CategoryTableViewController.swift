@@ -8,8 +8,9 @@
 
 import UIKit
 import RealmSwift
+import SwipeCellKit
 
-class CategoryTableViewController: UITableViewController {
+class CategoryTableViewController: SwipeTableViewController {
     
     let realm = try! Realm()
     var categories: Results<Category>?
@@ -18,9 +19,10 @@ class CategoryTableViewController: UITableViewController {
         super.viewDidLoad()
         
         loadData()
+        tableView.rowHeight = 80.0
     }
     
-// MARK: - Add Category Section
+    // MARK: - Add Category Section
     
     @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
         var textField = UITextField()
@@ -39,28 +41,8 @@ class CategoryTableViewController: UITableViewController {
         alert.addAction(action)
         present(alert, animated: true, completion: nil)
     }
-}
-
-// MARK: - Table View Data Source
-
-extension CategoryTableViewController {
     
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return categories?.count ?? 1
-    }
-    
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let category = categories?[indexPath.row]
-        let cell = tableView.dequeueReusableCell(withIdentifier: K.categoryCell, for: indexPath)
-        
-        cell.textLabel?.text = category?.name ?? "No categories to Added yet"
-        return cell
-    }
-}
-
-// MARK: - Data Model Methods
-
-extension CategoryTableViewController {
+    // MARK: - Data Model Methods
     
     func save(category: Category) {
         do {
@@ -76,6 +58,35 @@ extension CategoryTableViewController {
     func loadData() {
         categories = realm.objects(Category.self)
         tableView.reloadData()
+    }
+    
+    override func updateModel(at indexPath: IndexPath) {
+        if let categoryForDeletion = self.categories?[indexPath.row] {
+            do {
+                try self.realm.write{
+                    self.realm.delete(categoryForDeletion)
+                }
+            } catch {
+                print("Error with deletion. \(error.localizedDescription)")
+            }
+        }
+    }
+}
+
+// MARK: - Table View Data Source
+
+extension CategoryTableViewController {
+    
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return categories?.count ?? 1
+    }
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        let cell = super.tableView(tableView, cellForRowAt: indexPath)
+        
+        cell.textLabel?.text = categories?[indexPath.row].name ?? "No categories to Added yet"
+        return cell
     }
 }
 
@@ -95,4 +106,3 @@ extension CategoryTableViewController {
         }
     }
 }
-
