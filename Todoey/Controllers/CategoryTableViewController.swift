@@ -7,12 +7,12 @@
 //
 
 import UIKit
-import CoreData
+import RealmSwift
 
 class CategoryTableViewController: UITableViewController {
-
-    var categotyArray = [Category]()
-    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    
+    let realm = try! Realm()
+    var categories: Results<Category>?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,11 +27,9 @@ class CategoryTableViewController: UITableViewController {
         let alert = UIAlertController(title: "Add new category", message: "", preferredStyle: .alert)
         let action = UIAlertAction(title: "Add", style: .default) { action in
             
-            let newCategoty = Category(context: self.context)
+            let newCategoty = Category()
             newCategoty.name = textField.text!
-            self.categotyArray.append(newCategoty)
-            
-            self.saveData()
+            self.save(category: newCategoty)
         }
         
         alert.addTextField { alertTextField in
@@ -48,14 +46,14 @@ class CategoryTableViewController: UITableViewController {
 extension CategoryTableViewController {
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return categotyArray.count
+        return categories?.count ?? 1
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let category = categotyArray[indexPath.row]
+        let category = categories?[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: K.categoryCell, for: indexPath)
         
-        cell.textLabel?.text = category.name
+        cell.textLabel?.text = category?.name ?? "No categories to Added yet"
         return cell
     }
 }
@@ -64,21 +62,19 @@ extension CategoryTableViewController {
 
 extension CategoryTableViewController {
     
-    func saveData() {
+    func save(category: Category) {
         do {
-            try context.save()
+            try realm.write {
+                realm.add(category)
+            }
         } catch {
             print("Error saving data with context: \(error.localizedDescription)")
         }
         tableView.reloadData()
     }
     
-    func loadData(with request: NSFetchRequest<Category> = Category.fetchRequest()) {
-        do {
-            categotyArray = try context.fetch(request)
-        } catch {
-            print("Error load data with context: \(error.localizedDescription)")
-        }
+    func loadData() {
+        categories = realm.objects(Category.self)
         tableView.reloadData()
     }
 }
@@ -95,7 +91,7 @@ extension CategoryTableViewController {
         let destinationVC = segue.destination as! TodoListViewController
         
         if let indexPath = tableView.indexPathForSelectedRow {
-            destinationVC.seletcedCategory = categotyArray[indexPath.row]
+            destinationVC.seletcedCategory = categories?[indexPath.row]
         }
     }
 }
