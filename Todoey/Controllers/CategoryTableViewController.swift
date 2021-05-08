@@ -8,7 +8,7 @@
 
 import UIKit
 import RealmSwift
-import SwipeCellKit
+import ChameleonFramework
 
 class CategoryTableViewController: SwipeTableViewController {
     
@@ -20,6 +20,29 @@ class CategoryTableViewController: SwipeTableViewController {
         
         loadData()
         tableView.rowHeight = 80.0
+        tableView.separatorStyle = .none
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        guard let navBar = navigationController?.navigationBar else {
+            fatalError("navigation controller does not exist")
+        }
+        guard let navBarColor = UIColor(hexString: "9B1C1F") else {
+            fatalError("Color does not exist")
+        }
+        
+        let navBarAppearance = UINavigationBarAppearance()
+        navBarAppearance.configureWithOpaqueBackground()
+        navBarAppearance.titleTextAttributes = [.foregroundColor: navBarColor]
+        navBarAppearance.largeTitleTextAttributes = [
+            .foregroundColor: ContrastColorOf(navBarColor, returnFlat: true)
+        ]
+        navBarAppearance.backgroundColor = navBarColor
+        navBar.standardAppearance = navBarAppearance
+        navBar.scrollEdgeAppearance = navBarAppearance
+        navBar.tintColor = ContrastColorOf(navBarColor, returnFlat: true)
     }
     
     // MARK: - Add Category Section
@@ -31,6 +54,7 @@ class CategoryTableViewController: SwipeTableViewController {
             
             let newCategoty = Category()
             newCategoty.name = textField.text!
+            newCategoty.color = UIColor.randomFlat().hexValue()
             self.save(category: newCategoty)
         }
         
@@ -84,8 +108,15 @@ extension CategoryTableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = super.tableView(tableView, cellForRowAt: indexPath)
+        let category = categories?[indexPath.row]
         
-        cell.textLabel?.text = categories?[indexPath.row].name ?? "No categories to Added yet"
+        guard let categoryColor = UIColor(hexString: category?.color ?? "9B1C1F") else {
+            fatalError()
+        }
+        
+        cell.textLabel?.text = category?.name ?? "No categories to Added yet"
+        cell.textLabel?.textColor = ContrastColorOf(categoryColor, returnFlat: true)
+        cell.backgroundColor = categoryColor
         return cell
     }
 }
@@ -102,7 +133,7 @@ extension CategoryTableViewController {
         let destinationVC = segue.destination as! TodoListViewController
         
         if let indexPath = tableView.indexPathForSelectedRow {
-            destinationVC.seletcedCategory = categories?[indexPath.row]
+            destinationVC.selectedCategory = categories?[indexPath.row]
         }
     }
 }
